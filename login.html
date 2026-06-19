@@ -1,22 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Estudar Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estudar Login</title>
 </head>
-<body style="font-family:Arial;text-align:center;padding:50px;">
 
-<h1>🌸 Estudar Login</h1>
+<body>
+  <h2>Login to Estudar</h2>
 
-<input id="email" type="email" placeholder="Email"><br><br>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
 
-<input id="password" type="password" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
 
-<button>Login</button>
+  <p id="msg"></p>
 
-<p>Don't have an account?</p>
+  <script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-<button>Create Account</button>
+    // 🔮 Firebase config (same as signup)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      appId: "YOUR_APP_ID"
+    };
 
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // 🌙 Login function
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          document.getElementById("msg").innerText = "Login successful ✨";
+
+          // redirect to dashboard
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          document.getElementById("msg").innerText = error.message;
+        });
+    };
+  </script>
 </body>
 </html>
