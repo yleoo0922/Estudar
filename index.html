@@ -13,6 +13,7 @@ body{
     color:#333;
 }
 
+/* NAV */
 nav{
     display:flex;
     justify-content:space-between;
@@ -30,6 +31,7 @@ nav{
     color:#7b4dff;
 }
 
+/* HERO */
 .hero{
     text-align:center;
     padding:80px 20px;
@@ -53,8 +55,10 @@ nav{
     border:none;
     border-radius:30px;
     font-size:18px;
+    cursor:pointer;
 }
 
+/* FEATURES */
 .features{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -69,17 +73,65 @@ nav{
     box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* PRICING */
 .pricing{
     background:#ffffff;
     padding:50px;
     text-align:center;
 }
 
+/* FOOTER */
 footer{
     background:#5e35b1;
     color:white;
     text-align:center;
     padding:30px;
+}
+
+/* 🌸 LOGIN MODAL */
+.modal {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-box {
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    width:320px;
+    text-align:center;
+}
+
+.modal-box input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+.modal-box button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#7b4dff;
+    color:white;
+    cursor:pointer;
+}
+
+.switch {
+    margin-top:10px;
+    font-size:13px;
+    color:#666;
+    cursor:pointer;
 }
 </style>
 </head>
@@ -88,56 +140,32 @@ footer{
 
 <nav>
     <div class="logo">🌸 ESTUDAR</div>
-    <div>Learn • Grow • Bloom</div>
+    <button onclick="openLogin()" style="background:#7b4dff;color:white;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;">
+        Login / Sign Up
+    </button>
 </nav>
 
 <section class="hero">
     <h1>Where Every Learner Blooms 🌸</h1>
     <p>AI-powered learning platform for students worldwide.</p>
-    <button class="button">Start Learning Free</button>
+    <button class="button" onclick="openLogin()">Start Learning Free</button>
 </section>
 
 <section class="features">
-    <div class="card">
-        <h2>🤖 AI Tutor</h2>
-        <p>Personalized learning powered by AI.</p>
-    </div>
-
-    <div class="card">
-        <h2>📚 School Learning</h2>
-        <p>CBSE, ICSE, IGCSE, IB and more.</p>
-    </div>
-
-    <div class="card">
-        <h2>🌎 Language Galaxy</h2>
-        <p>Learn English, Korean, Japanese and more.</p>
-    </div>
-
-    <div class="card">
-        <h2>🎓 College Hub</h2>
-        <p>Universities, scholarships and applications.</p>
-    </div>
-
-    <div class="card">
-        <h2>🌱 Study Garden</h2>
-        <p>Grow your virtual garden while learning.</p>
-    </div>
-
-    <div class="card">
-        <h2>📊 Analytics</h2>
-        <p>Track progress and improve performance.</p>
-    </div>
+    <div class="card"><h2>🤖 AI Tutor</h2><p>Personalized learning powered by AI.</p></div>
+    <div class="card"><h2>📚 School Learning</h2><p>CBSE, ICSE, IGCSE, IB and more.</p></div>
+    <div class="card"><h2>🌎 Language Galaxy</h2><p>Learn English, Korean, Japanese and more.</p></div>
+    <div class="card"><h2>🎓 College Hub</h2><p>Universities, scholarships and applications.</p></div>
+    <div class="card"><h2>🌱 Study Garden</h2><p>Grow your virtual garden while learning.</p></div>
+    <div class="card"><h2>📊 Analytics</h2><p>Track progress and improve performance.</p></div>
 </section>
 
 <section class="pricing">
     <h2>Plans</h2>
-
     <h3>🌸 Free</h3>
     <p>School Learning, AI Tutor, Certificates</p>
-
     <h3>✨ Estudar Plus</h3>
     <p>$9/year</p>
-
     <h3>💝 Supporter</h3>
     <p>$25/year</p>
 </section>
@@ -147,6 +175,92 @@ footer{
     <p>Learn • Grow • Bloom</p>
     <p>Founder: Tansi 👑</p>
 </footer>
+
+<!-- 🌸 LOGIN MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-box">
+
+        <h2 id="title">Login</h2>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+
+        <button id="btn">Login</button>
+
+        <div class="switch" onclick="toggleMode()">
+            Switch to Sign Up
+        </div>
+
+        <p id="msg"></p>
+    </div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+let isLogin = true;
+
+const modal = document.getElementById("modal");
+const title = document.getElementById("title");
+const btn = document.getElementById("btn");
+const msg = document.getElementById("msg");
+
+window.openLogin = function(){
+    modal.style.display = "flex";
+}
+
+window.toggleMode = function(){
+    isLogin = !isLogin;
+
+    if(isLogin){
+        title.innerText = "Login";
+        btn.innerText = "Login";
+    } else {
+        title.innerText = "Sign Up";
+        btn.innerText = "Create Account";
+    }
+}
+
+btn.addEventListener("click", ()=>{
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if(isLogin){
+        signInWithEmailAndPassword(auth, email, password)
+        .then(()=>{
+            msg.innerText = "Welcome back ✨";
+            window.location.href = "dashboard.html";
+        })
+        .catch(e=> msg.innerText = e.message);
+    } else {
+        createUserWithEmailAndPassword(auth, email, password)
+        .then(()=>{
+            msg.innerText = "Account created 🌸";
+            window.location.href = "dashboard.html";
+        })
+        .catch(e=> msg.innerText = e.message);
+    }
+});
+</script>
 
 </body>
 </html>
