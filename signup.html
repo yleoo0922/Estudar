@@ -3,9 +3,10 @@
 <head>
   <title>Estudar Sign Up</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body{
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background:#f5f0ff;
       display:flex;
       justify-content:center;
@@ -23,9 +24,7 @@
       text-align:center;
     }
 
-    h1{
-      color:#6a4cff;
-    }
+    h1{ color:#6a4cff; }
 
     input{
       width:100%;
@@ -46,6 +45,11 @@
       font-size:16px;
       cursor:pointer;
     }
+
+    a{
+      color:#6a4cff;
+      text-decoration:none;
+    }
   </style>
 </head>
 
@@ -54,18 +58,39 @@
 <div class="box">
   <h1>🌸 Estudar</h1>
 
-  <input type="text" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
 
-  <input type="email" placeholder="Email">
-
-  <input type="password" placeholder="Password">
-
-  <button>Create Account</button>
+  <button onclick="signup()">Create Account</button>
 
   <p>Already have an account?</p>
-
   <a href="login.html">Login</a>
 </div>
+
+<!-- ONLY ONE SCRIPT -->
+<script type="module">
+import { auth } from "./firebase.js";
+
+import {
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+window.signup = async function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+
+    alert("Account created successfully ✨");
+
+    window.location.href = "dashboard.html";
+
+  } catch (error) {
+    alert(error.message);
+  }
+};
+</script>
 
 </body>
 </html>
